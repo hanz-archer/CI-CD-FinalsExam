@@ -1,38 +1,33 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom'; 
-require('dotenv').config();
-
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-
-  const apiUrl = process.env.NODE_ENV === 'production' 
-  ? 'https://dalubatan.vercel.app/' 
-  : 'http://localhost:5000';
-
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-
-  try {
-    const response = await axios.post(`${apiUrl}/register`, {
-      email,
-      password,
-    });
-
-    localStorage.setItem('authToken', response.data.token);
-    alert('Login successful');
-  } catch (err) {
-    if (axios.isAxiosError(err)) {
-      alert('Error: ' + (err.response?.data || err.message));
-    } else {
-      // Handle other errors
-      alert('An unexpected error occurred');
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+  
+    try {
+      // Change this URL to your backend deployed on Render
+      const response = await axios.post('https://ci-cd-finalsexam.onrender.com', {
+        email,
+        password,
+      });
+  
+      // Store the JWT token in localStorage
+      localStorage.setItem('authToken', response.data.token);
+      alert('Login successful');
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        alert('Error: ' + (err.response?.data || err.message));
+      } else {
+        // Handle other errors
+        alert('An unexpected error occurred');
+      }
     }
-  }
-};
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 px-6 py-12 lg:px-8">
@@ -43,7 +38,7 @@ const handleSubmit = async (e: React.FormEvent) => {
           className="mx-auto h-10 w-auto"
         />
         <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">
-         Login - System Integration and Architecture 
+          Login - System Integration and Architecture
         </h2>
       </div>
 
