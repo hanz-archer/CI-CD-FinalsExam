@@ -1,31 +1,38 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import { Link } from 'react-router-dom'; 
+require('dotenv').config();
+
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-  
-    try {
-      const response = await axios.post('http://localhost:5000/login', {
-        email,
-        password,
-      });
-  
-      localStorage.setItem('authToken', response.data.token);
-      alert('Login successful');
-    } catch (err) {
-      if (axios.isAxiosError(err)) {
-        alert('Error: ' + (err.response?.data || err.message));
-      } else {
-        // Handle other errors
-        alert('An unexpected error occurred');
-      }
+
+  const apiUrl = process.env.NODE_ENV === 'production' 
+  ? 'https://dalubatan.vercel.app/' 
+  : 'http://localhost:5000';
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  try {
+    const response = await axios.post(`${apiUrl}/register`, {
+      email,
+      password,
+    });
+
+    localStorage.setItem('authToken', response.data.token);
+    alert('Login successful');
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      alert('Error: ' + (err.response?.data || err.message));
+    } else {
+      // Handle other errors
+      alert('An unexpected error occurred');
     }
-  };
+  }
+};
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 px-6 py-12 lg:px-8">

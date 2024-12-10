@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom'; 
+require('dotenv').config();
+
 
 const RegisterForm = () => {
   const [username, setUsername] = useState<string>('');
@@ -9,25 +11,27 @@ const RegisterForm = () => {
   const [error, setError] = useState<string | null>(null); // To store error messages
   const [loading, setLoading] = useState<boolean>(false); // To show a loading state
 
+  const apiUrl = process.env.NODE_ENV === 'production' 
+  ? 'https://dalubatan.vercel.app/' 
+  : 'http://localhost:5000'; 
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true); 
 
     try {
-      await axios.post('http://localhost:5000/register', {
+      await axios.post(`${apiUrl}/register`, {
         username,
         email,
         password,
       });
 
-      // If registration is successful
       alert('Registration successful');
       setUsername('');
       setEmail('');
       setPassword('');
     } catch (err) {
-      // If error occurs
-      setError(null); // Reset the error message before handling the new error
+      setError(null); 
 
       if (axios.isAxiosError(err)) {
         const errorMessage = err.response?.data || 'Something went wrong, please try again';

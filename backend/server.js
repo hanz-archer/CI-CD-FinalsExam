@@ -5,9 +5,15 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 require('dotenv').config();
 
+const corsOptions = {
+  origin: 'https://dalubatan.vercel.app/',  // Vercel frontend URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true,
+};
+
 const app = express();
-app.use(cors());
-app.use(express.json()); // To parse JSON request body
+app.use(cors(corsOptions));
+app.use(express.json()); 
 
 // MongoDB User schema
 const userSchema = new mongoose.Schema({
