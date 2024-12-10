@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 
 const RegisterForm = () => {
   const [username, setUsername] = useState<string>('');
@@ -10,10 +10,10 @@ const RegisterForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true); // Start loading while making the request
+    setLoading(true); 
 
     try {
-      const response = await axios.post('http://localhost:5000/register', {
+      await axios.post('http://localhost:5000/register', {
         username,
         email,
         password,
