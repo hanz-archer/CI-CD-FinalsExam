@@ -5,11 +5,9 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 require('dotenv').config();
 
-
 const app = express();
 app.use(cors());
 app.use(express.json()); // To parse JSON request body
-
 
 // MongoDB User schema
 const userSchema = new mongoose.Schema({
@@ -23,7 +21,7 @@ const User = mongoose.model('User', userSchema);
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected'))
-  .catch((err) => console.log(err));
+  .catch((err) => console.log('MongoDB connection error:', err));
 
 // Register Route (POST /register)
 app.post('/register', async (req, res) => {
@@ -40,6 +38,7 @@ app.post('/register', async (req, res) => {
     
     res.status(201).send('User registered');
   } catch (err) {
+    console.log('Registration Error:', err);
     res.status(500).send('Server error');
   }
 });
@@ -60,6 +59,7 @@ app.post('/login', async (req, res) => {
 
     res.json({ token });
   } catch (err) {
+    console.log('Login Error:', err);
     res.status(500).send('Server error');
   }
 });
