@@ -27,7 +27,7 @@ const RegisterForm = () => {
 
     try {
       // Change this URL to your backend deployed on Render
-      const response = await axios.post('https://ci-cd-finalsexam.onrender.com/register', {
+      await axios.post('https://ci-cd-finalsexam.onrender.com/register', {
         username,
         email,
         password,
