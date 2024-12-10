@@ -1,51 +1,70 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const cors = require("cors");
-require("dotenv").config();
+const express = require('express');
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const cors = require('cors');
+require('dotenv').config();
+
 
 const app = express();
-app.use(express.json());
-app.use(cors()); // Allow cross-origin requests from the frontend
+app.use(cors());
+app.use(express.json()); // To parse JSON request body
 
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+
+// MongoDB User schema
+const userSchema = new mongoose.Schema({
+  username: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
 });
 
-const UserSchema = new mongoose.Schema({
-  email: String,
-  password: String,
+const User = mongoose.model('User', userSchema);
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('MongoDB connected'))
+  .catch((err) => console.log(err));
+
+// Register Route (POST /register)
+app.post('/register', async (req, res) => {
+  const { username, email, password } = req.body;
+
+  try {
+    const userExists = await User.findOne({ email });
+    if (userExists) return res.status(400).send('Email already registered');
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({ username, email, password: hashedPassword });
+    await newUser.save();
+    
+    res.status(201).send('User registered');
+  } catch (err) {
+    res.status(500).send('Server error');
+  }
 });
 
-const User = mongoose.model("User", UserSchema);
-
-// Register user
-app.post("/api/register", async (req, res) => {
+// Login Route (POST /login)
+app.post('/login', async (req, res) => {
   const { email, password } = req.body;
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(password, salt);
-  const newUser = new User({ email, password: hashedPassword });
-  await newUser.save();
-  res.send("User registered successfully");
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).send('Invalid credentials');
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).send('Invalid credentials');
+
+    // Create JWT token
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    res.json({ token });
+  } catch (err) {
+    res.status(500).send('Server error');
+  }
 });
 
-// Login user
-app.post("/api/login", async (req, res) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ email });
-  if (!user) return res.status(400).send("Invalid email or password");
-
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) return res.status(400).send("Invalid email or password");
-
-  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "1h",
-  });
-  res.json({ success: true, token });
-});
-
+// Start the server
 app.listen(5000, () => {
-  console.log("Server running on http://localhost:5000");
+  console.log('Server running on http://localhost:5000');
 });
