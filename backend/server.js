@@ -27,6 +27,11 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 app.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
 
+  // Input validation
+  if (!username || !email || !password) {
+    return res.status(400).send('All fields are required');
+  }
+
   try {
     const userExists = await User.findOne({ email });
     if (userExists) return res.status(400).send('Email already registered');
@@ -36,16 +41,21 @@ app.post('/register', async (req, res) => {
     const newUser = new User({ username, email, password: hashedPassword });
     await newUser.save();
     
-    res.status(201).send('User registered');
+    res.status(201).send('User registered successfully');
   } catch (err) {
     console.log('Registration Error:', err);
-    res.status(500).send('Server error');
+    res.status(500).send('Internal server error during registration');
   }
 });
 
 // Login Route (POST /login)
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
+
+  // Input validation
+  if (!email || !password) {
+    return res.status(400).send('Email and password are required');
+  }
 
   try {
     const user = await User.findOne({ email });
@@ -60,7 +70,7 @@ app.post('/login', async (req, res) => {
     res.json({ token });
   } catch (err) {
     console.log('Login Error:', err);
-    res.status(500).send('Server error');
+    res.status(500).send('Internal server error during login');
   }
 });
 

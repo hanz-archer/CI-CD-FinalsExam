@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom'; 
 
 const RegisterForm = () => {
   const [username, setUsername] = useState<string>('');
@@ -126,12 +127,13 @@ const RegisterForm = () => {
         {error && <p className="mt-4 text-center text-sm text-red-500">{error}</p>}
 
         {/* Register link */}
-        <p className="mt-10 text-center text-sm text-gray-500">
-          Already a member?{' '}
-          <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
-            Login
-          </a>
+        <p className="mt-6 text-center text-sm text-gray-500">
+          Don't have an account?{' '}
+          <Link to="/" className="font-semibold text-indigo-600 hover:text-indigo-500">
+            Login here
+          </Link>
         </p>
+        
       </div>
     </div>
   );
