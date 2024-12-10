@@ -13,9 +13,21 @@ const RegisterForm = () => {
     e.preventDefault();
     setLoading(true); 
 
+    if (!email.match(/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/)) {
+      setError('Please enter a valid email address');
+      setLoading(false);
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters');
+      setLoading(false);
+      return;
+    }
+
     try {
       // Change this URL to your backend deployed on Render
-      await axios.post('https://ci-cd-finalsexam.onrender.com', {
+      const response = await axios.post('https://ci-cd-finalsexam.onrender.com/register', {
         username,
         email,
         password,
@@ -26,6 +38,7 @@ const RegisterForm = () => {
       setUsername('');
       setEmail('');
       setPassword('');
+      setError(null); // Clear error if successful
     } catch (err) {
       // If error occurs
       setError(null); // Reset the error message before handling the new error
@@ -129,7 +142,7 @@ const RegisterForm = () => {
 
         {/* Register link */}
         <p className="mt-6 text-center text-sm text-gray-500">
-          Don't have an account?{' '}
+          Already have an account?{' '}
           <Link to="/" className="font-semibold text-indigo-600 hover:text-indigo-500">
             Login here
           </Link>

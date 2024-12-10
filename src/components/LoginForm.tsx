@@ -5,26 +5,24 @@ import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(''); // To store error messages
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
   
     try {
-      // Change this URL to your backend deployed on Render
-      const response = await axios.post('https://ci-cd-finalsexam.onrender.com', {
+      const response = await axios.post('https://ci-cd-finalsexam.onrender.com/login', {
         email,
         password,
       });
   
-      // Store the JWT token in localStorage
       localStorage.setItem('authToken', response.data.token);
       alert('Login successful');
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        alert('Error: ' + (err.response?.data || err.message));
+        setError(err.response?.data || err.message);
       } else {
-        // Handle other errors
-        alert('An unexpected error occurred');
+        setError('An unexpected error occurred');
       }
     }
   };
@@ -93,6 +91,13 @@ const LoginForm = () => {
               Sign in
             </button>
           </div>
+
+          {/* Display Error */}
+          {error && (
+            <p className="text-center text-red-500 text-sm mt-2">
+              {error}
+            </p>
+          )}
         </form>
 
         {/* Link to Register page */}
