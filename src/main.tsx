@@ -2,7 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginForm from "./components/LoginForm";
-import RegisterForm from "./components/RegisterForm"; // Correct name for the registration form
+import RegisterForm from "./components/RegisterForm"; 
+import Homepage from "./components/Homepage";
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
@@ -13,6 +14,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <Route path="/" element={<LoginForm />} />
         {/* Route for Register Form */}
         <Route path="/register" element={<RegisterForm />} />
+        <Route path="/homepage" element={<Homepage />} />
       </Routes>
     </Router>
   </React.StrictMode>
