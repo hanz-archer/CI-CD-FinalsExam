@@ -38,7 +38,7 @@ const LoginForm = () => {
           className="mx-auto h-10 w-auto"
         />
         <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">
-          Login - System Integration and Architecture
+          Login - System Integration and Architecture Finals
         </h2>
       </div>
 
